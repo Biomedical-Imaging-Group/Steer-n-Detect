@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="Steer_n_Detect" default="install" basedir=".">
+	    <property name="src"    location="src"/>
+	    <property name="bin"    location="bin"/>
+	    <property name="dist" 	location="dist"/>
+	    <property name="jar"	location="${dist}/${ant.project.name}.jar"/>
+	    <property name="srczip"	location="${dist}/${ant.project.name}-src.zip"/>
+		<property name="clszip"	location="${dist}/${ant.project.name}-cls.zip"/>
+
+		<target name="install" description="Copy classes to ImageJ plugin directory">
+	        <copy file="plugins.config" toDir="bin" />
+
+			<zip destfile="${srczip}" basedir="${src}" />
+			<zip destfile="${clszip}" basedir="${bin}" />
+		
+			<jar jarfile="${jar}" basedir="${bin}">
+				<!-- define MANIFEST.MF -->
+				<manifest>
+					<attribute name="Main-Class" value="Steer_Detect" />
+					<attribute name="Class-Path" value="." />
+					<attribute name="Ant-Version" value="${ant.version}" />
+					<attribute name="Created-By" value="Zs. Puspoki Biomedical Imaging Group" />
+					<attribute name='Specification-Title' value='Steer-n-Detect' />
+					<attribute name='Specification-Version' value='1.0' />
+					<attribute name='Build-Date' value='17.08.2018' />
+				</manifest>
+			</jar>
+
+			<copy file="${jar}" toDir="../../ImageJ/plugins/" />
+
+		</target>
+
+		<target name="clean" description="Clean up build products">
+			<delete dir="${bin}"/>
+		</target>
+	</project>
