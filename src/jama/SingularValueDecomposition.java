@@ -1,3 +1,19 @@
+/**
+   Jama = Java Matrix class.
+
+   The Java Matrix Class provides the fundamental operations of numerical
+   linear algebra.  Various constructors create Matrices from two dimensional
+   arrays of double precision floating point numbers.  Various "gets" and
+   "sets" provide access to submatrices and matrix elements.  Several methods 
+   implement basic matrix arithmetic, including matrix addition and
+   multiplication, matrix norms, and element-by-element array operations.
+   Methods for reading and printing matrices are also included.  All the
+   operations in this version of the Matrix Class involve real matrices.
+   Complex matrices may be handled in a future version.
+
+	@author The MathWorks, Inc. and the National Institute of Standards and Technology.
+	@version 5 August 1998
+*/
 package jama;
 
 /**

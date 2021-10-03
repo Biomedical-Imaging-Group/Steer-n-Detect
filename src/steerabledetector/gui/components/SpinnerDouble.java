@@ -1,23 +1,3 @@
-//====================================================================================================
-// Project: SpotCaliper
-// 
-// Authors: Zsuzsanna Puspoki and Daniel Sage
-// Organization: Biomedical Imaging Group (BIG), Ecole Polytechnique Federale de Lausanne
-// Address: EPFL-STI-IMT-LIB, 1015 Lausanne, Switzerland
-//
-// Information: http://bigwww.epfl.ch/algorithms/spotcaliper/
-//
-// References:
-// Zsuzsanna Puspoki et al.
-// SpotCaliper: Fast Wavelet-based Spot Detection with Accurate Size Estimation 
-// Bioinformatics Oxford, submitted in June 2015.
-// Available at: http://bigwww.epfl.ch/publications/
-//
-// Conditions of use:
-// You'll be free to use this software for research purposes, but you should not redistribute 
-// it without our consent. In addition, we expect you to include a citation whenever you 
-// present or publish results that are based on it.
-//====================================================================================================
 package steerabledetector.gui.components;
 
 import javax.swing.JFormattedTextField;

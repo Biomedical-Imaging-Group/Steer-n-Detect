@@ -48,7 +48,7 @@ public class SliderTextHorizontal extends JPanel implements ChangeListener {
 		slider.setMajorTickSpacing(25);
 		slider.setLabelTable(labels);
 		slider.addChangeListener(this);
-		add(new JLabel("Whitening"), BorderLayout.WEST);
+		add(new JLabel("Shaping"), BorderLayout.WEST);
 		add(slider, BorderLayout.CENTER);
 		add(lbl, BorderLayout.EAST);
 	}
