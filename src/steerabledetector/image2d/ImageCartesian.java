@@ -47,16 +47,16 @@ public class ImageCartesian {
 	}
 
 	public String		name;
-	public Domain	domain;
+	public Domain		domain;
 
-	public double	sizeXSpace;
-	public double	sizeYSpace;
+	public double		sizeXSpace;
+	public double		sizeYSpace;
 
-	public double	dx;
-	public double	dy;
+	public double		dx;
+	public double		dy;
 
-	public int	nx;
-	public int	ny;
+	public int			nx;
+	public int			ny;
 
 	public double[]		dataReel;
 	public double[]		dataImag;
@@ -67,7 +67,6 @@ public class ImageCartesian {
 	public ImageCartesian(int nx, int ny, double sizeX, double sizeY, double[] realValues, double[] imaginaryValues, Domain dom, String nameInput) {
 		build(nx, ny, sizeX, sizeY, realValues, imaginaryValues, dom, nameInput);
 	}
-	
 
 	public ImageCartesian(int nx, int ny, Domain dom) {
 		build(nx, ny, 1, 1, null, null, dom, "empty");
@@ -85,24 +84,22 @@ public class ImageCartesian {
 		build(init.nx, init.ny, init.sizeXSpace, init.sizeYSpace, init.dataReel, init.dataImag, init.domain, init.name);
 	}
 
-	
-	private void build(int nx, int ny, double sizeX, double sizeY, double[] realValues, double[] imaginaryValues,
-			Domain dom, String nameInput) {
-		this.name = nameInput;
-		this.nx = nx;
-		this.ny = ny;
+	private void build(int nx, int ny, double sizeX, double sizeY, double[] realValues, double[] imaginaryValues, Domain dom, String nameInput) {
+		this.name	= nameInput;
+		this.nx		= nx;
+		this.ny		= ny;
 
-		sizeXSpace = sizeX;
-		sizeYSpace = sizeY;
+		sizeXSpace	= sizeX;
+		sizeYSpace	= sizeY;
 
-		domain = dom;
+		domain		= dom;
 		if (dom == Domain.SPACE) {
-			dx = sizeXSpace / nx;
-			dy = sizeYSpace / ny;
+			dx	= sizeXSpace / nx;
+			dy	= sizeYSpace / ny;
 		}
 		else {
-			dx = 2. * Math.PI / nx;
-			dy = 2. * Math.PI / ny;
+			dx	= 2. * Math.PI / nx;
+			dy	= 2. * Math.PI / ny;
 		}
 
 		if (realValues == null) {
@@ -163,18 +160,17 @@ public class ImageCartesian {
 			return null;
 		}
 
-		ImageProcessor ip = imp.getProcessor();
-		FloatProcessor fp = (FloatProcessor) ip.convertToFloat();
+		ImageProcessor	ip			= imp.getProcessor();
+		FloatProcessor	fp			= (FloatProcessor) ip.convertToFloat();
 
-		float[] tempPix = (float[]) fp.getPixels();
-		double[] tempDouble = new double[tempPix.length];
+		float[]			tempPix		= (float[]) fp.getPixels();
+		double[]		tempDouble	= new double[tempPix.length];
 
 		for (int k = 0; k < tempPix.length; k++) {
 			tempDouble[k] = tempPix[k];
 		}
 
-		ImageCartesian output = new ImageCartesian(fp.getWidth(), fp.getHeight(), fp.getWidth() / 100.,
-				fp.getHeight() / 100., tempDouble, null, ImageCartesian.Domain.SPACE,
+		ImageCartesian output = new ImageCartesian(fp.getWidth(), fp.getHeight(), fp.getWidth() / 100., fp.getHeight() / 100., tempDouble, null, ImageCartesian.Domain.SPACE,
 				imp.getTitle().split("\\.", 2)[0]);
 		output.swapArray(output.dataReel, output.dataReel);
 
@@ -195,21 +191,21 @@ public class ImageCartesian {
 
 		for (int indX = 0; indX < nx; indX++) {
 			for (int indY = 0; indY < ny; indY++) {
-				theta = output.indexToTheta(indX, indY);
+				theta										= output.indexToTheta(indX, indY);
 
-				output.dataReel[indX + output.nx * indY] = Math.cos(order * (theta - angle));
-				output.dataImag[indX + output.nx * indY] = Math.sin(order * (theta - angle));
+				output.dataReel[indX + output.nx * indY]	= Math.cos(order * (theta - angle));
+				output.dataImag[indX + output.nx * indY]	= Math.sin(order * (theta - angle));
 			}
 
 		}
 
 		if (order == 0) {
-			output.dataReel[0] = 1f;
-			output.dataImag[0] = 0f;
+			output.dataReel[0]	= 1f;
+			output.dataImag[0]	= 0f;
 		}
 		else {
-			output.dataReel[0] = 0f;
-			output.dataImag[0] = 0f;
+			output.dataReel[0]	= 0f;
+			output.dataImag[0]	= 0f;
 		}
 
 		return output;
@@ -228,15 +224,14 @@ public class ImageCartesian {
 		}
 		verifyPairDimension();
 
-		AcademicFFT academicFFT = new AcademicFFT(nx, ny, 0, 0);
+		AcademicFFT	academicFFT		= new AcademicFFT(nx, ny, 0, 0);
 
-		double[] realPart = dataReel.clone();
-		double[] imaginaryPart = dataImag.clone();
+		double[]	realPart		= dataReel.clone();
+		double[]	imaginaryPart	= dataImag.clone();
 
 		academicFFT.directTransform(realPart, imaginaryPart, null, null, AcademicFFT.InputDataType.COMPLEXINPUT);
 
-		ImageCartesian output = new ImageCartesian(nx, ny, sizeXSpace, sizeYSpace, realPart, imaginaryPart,
-				Domain.FOURIER, name + "-Fourier");
+		ImageCartesian output = new ImageCartesian(nx, ny, sizeXSpace, sizeYSpace, realPart, imaginaryPart, Domain.FOURIER, name + "-Fourier");
 		output.multiply(Math.sqrt(dx * dy));
 		return output;
 	}
@@ -248,14 +243,13 @@ public class ImageCartesian {
 		}
 		verifyPairDimension();
 
-		AcademicFFT academicFFT = new AcademicFFT(nx, ny, 0, 0);
+		AcademicFFT	academicFFT		= new AcademicFFT(nx, ny, 0, 0);
 
-		double[] realPart = dataReel.clone();
-		double[] imaginaryPart = dataImag.clone();
+		double[]	realPart		= dataReel.clone();
+		double[]	imaginaryPart	= dataImag.clone();
 
 		academicFFT.inverseTransform(realPart, imaginaryPart, null, null);
-		ImageCartesian output = new ImageCartesian(nx, ny, sizeXSpace, sizeYSpace, realPart, imaginaryPart,
-				Domain.SPACE, name + "-Space");
+		ImageCartesian output = new ImageCartesian(nx, ny, sizeXSpace, sizeYSpace, realPart, imaginaryPart, Domain.SPACE, name + "-Space");
 		output.multiply(1 / Math.sqrt(output.dx * output.dy));
 		return output;
 	}
@@ -263,18 +257,18 @@ public class ImageCartesian {
 	public void addOrientedFilter(double factR, double factI, ImageCartesian filter) {
 		int n = nx * ny;
 		for (int ind = 0; ind < n; ind++) {
-			double a = filter.dataReel[ind];
-			double b = filter.dataReel[ind];
-			dataReel[ind] += a * factR - b * factI;
-			dataImag[ind] += a * factI + b * factR;
+			double	a	= filter.dataReel[ind];
+			double	b	= filter.dataReel[ind];
+			dataReel[ind]	+= a * factR - b * factI;
+			dataImag[ind]	+= a * factI + b * factR;
 		}
 	}
 
 	public ImageCartesian cropToPairSquareSize() {
-		int nxNew = (nx % 2 == 0) ? nx : nx - 1;
-		int nyNew = (ny % 2 == 0) ? ny : ny - 1;
+		int	nxNew	= (nx % 2 == 0) ? nx : nx - 1;
+		int	nyNew	= (ny % 2 == 0) ? ny : ny - 1;
 
-		int size = nx < ny ? nx : ny;
+		int	size	= nx < ny ? nx : ny;
 
 		if (size <= 0) {
 			throw new IllegalStateException("problem with the image size");
@@ -299,11 +293,10 @@ public class ImageCartesian {
 		swapArray(dataReel, dataReel);
 		swapArray(dataImag, dataImag);
 
-		ImageCartesian output = new ImageCartesian(nxNew, nyNew, nxNew * dx, nyNew * dy, domain,
-				name + "-cropped");
+		ImageCartesian	output	= new ImageCartesian(nxNew, nyNew, nxNew * dx, nyNew * dy, domain, name + "-cropped");
 
-		int cX = (nx - nxNew) / 2;
-		int cY = (ny - nyNew) / 2;
+		int				cX		= (nx - nxNew) / 2;
+		int				cY		= (ny - nyNew) / 2;
 
 		for (int indX = 0; indX < output.nx; indX++) {
 			for (int indY = 0; indY < output.ny; indY++) {
@@ -322,10 +315,9 @@ public class ImageCartesian {
 
 		verifyPairDimension();
 
-		ImageCartesian output = new ImageCartesian(2 * nx, 2 * ny, sizeXSpace, sizeYSpace, domain,
-				name + "-downSampled");
+		ImageCartesian	output	= new ImageCartesian(2 * nx, 2 * ny, sizeXSpace, sizeYSpace, domain, name + "-downSampled");
 
-		double[] pix = new double[2];
+		double[]		pix		= new double[2];
 		for (int indX = 0; indX < nx; indX++) {
 			for (int indY = 0; indY < ny; indY++) {
 
@@ -363,19 +355,18 @@ public class ImageCartesian {
 			nyNew = ny;
 		}
 
-		int PadX = (nxNew - nx);
-		int PadY = (nyNew - ny);
+		int	PadX	= (nxNew - nx);
+		int	PadY	= (nyNew - ny);
 
 		if (PadX < 0 || PadY < 0) {
 			throw new IllegalArgumentException("The padded image must be bigger than the original image.");
 		}
 
-		ImageCartesian output = new ImageCartesian(nxNew, nyNew, nxNew * dx, nyNew * dy, domain,
-				name + "-ZeroPadded");
+		ImageCartesian	output	= new ImageCartesian(nxNew, nyNew, nxNew * dx, nyNew * dy, domain, name + "-ZeroPadded");
 
-		double[] val = { 0., 0. };
-		int indXN = 0;
-		int indYN = 0;
+		double[]		val		= { 0., 0. };
+		int				indXN	= 0;
+		int				indYN	= 0;
 		for (int indX = 0; indX < output.nx; indX++) {
 			for (int indY = 0; indY < output.ny; indY++) {
 				indXN = indX - PadX;
@@ -407,17 +398,13 @@ public class ImageCartesian {
 
 	private void verifyIndexes(int indX, int indY) {
 		if (indX < 0 || indX >= nx || indY < 0 || indY >= ny)
-			throw new IllegalArgumentException("Index out of bound " +
-					" indX:" + indX + " indY: " + indY +
-					" nx:" + nx + " ny: " + ny);
+			throw new IllegalArgumentException("Index out of bound " + " indX:" + indX + " indY: " + indY + " nx:" + nx + " ny: " + ny);
 		return;
 	}
 
 	private void verifyIndexes(double indX, double indY) {
 		if (indX < 0. || indX > nx || indY < 0. || indY > ny)
-			throw new IllegalArgumentException("Index out of bound " +
-					" indX:" + indX + " indY: " + indY +
-					" nx:" + nx + " ny: " + ny);
+			throw new IllegalArgumentException("Index out of bound " + " indX:" + indX + " indY: " + indY + " nx:" + nx + " ny: " + ny);
 		return;
 	}
 
@@ -427,8 +414,8 @@ public class ImageCartesian {
 
 		double[] output = { 0., 0. };
 
-		output[0] = indX < nx / 2 ? indX / nx : (indX - nx) / nx;
-		output[1] = indY < ny / 2 ? indY / ny : (indY - ny) / ny;
+		output[0]	= indX < nx / 2 ? indX / nx : (indX - nx) / nx;
+		output[1]	= indY < ny / 2 ? indY / ny : (indY - ny) / ny;
 
 		return output;
 	}
@@ -440,8 +427,8 @@ public class ImageCartesian {
 
 		double[] output = { 0, 0 };
 
-		output[0] = posX >= 0 ? posX * nx : posX * nx + nx;
-		output[1] = posY >= 0 ? posY * ny : posY * ny + ny;
+		output[0]	= posX >= 0 ? posX * nx : posX * nx + nx;
+		output[1]	= posY >= 0 ? posY * ny : posY * ny + ny;
 
 		return output;
 	}
@@ -472,8 +459,8 @@ public class ImageCartesian {
 
 	public void getPixelFast(int indX, int indY, double[] pix) {
 
-		pix[0] = dataReel[indX + nx * indY];
-		pix[1] = dataImag[indX + nx * indY];
+		pix[0]	= dataReel[indX + nx * indY];
+		pix[1]	= dataImag[indX + nx * indY];
 	}
 
 	public double[] getPixel(int indX, int indY) {
@@ -482,8 +469,8 @@ public class ImageCartesian {
 
 		double output[] = new double[2];
 
-		output[0] = dataReel[indX + nx * indY];
-		output[1] = dataImag[indX + nx * indY];
+		output[0]	= dataReel[indX + nx * indY];
+		output[1]	= dataImag[indX + nx * indY];
 
 		return output;
 	}
@@ -496,19 +483,19 @@ public class ImageCartesian {
 
 		verifyIndexes(indX, indY);
 
-		dataReel[indX + nx * indY] = val[0];
-		dataImag[indX + nx * indY] = val[1];
+		dataReel[indX + nx * indY]	= val[0];
+		dataImag[indX + nx * indY]	= val[1];
 	}
 
 	public void multiplyPixel(int indX, int indY, double valRe, double valIm) {
 
 		verifyIndexes(indX, indY);
 
-		double tempR = dataReel[indX + nx * indY];
-		double tempI = dataImag[indX + nx * indY];
+		double	tempR	= dataReel[indX + nx * indY];
+		double	tempI	= dataImag[indX + nx * indY];
 
-		dataReel[indX + nx * indY] = tempR * valRe - tempI * valIm;
-		dataImag[indX + nx * indY] = tempR * valIm + tempI * valRe;
+		dataReel[indX + nx * indY]	= tempR * valRe - tempI * valIm;
+		dataImag[indX + nx * indY]	= tempR * valIm + tempI * valRe;
 	}
 
 	public void clearData() {
@@ -524,8 +511,8 @@ public class ImageCartesian {
 
 	public void addPixel(int indX, int indY, double valRe, double valIm) {
 		verifyIndexes(indX, indY);
-		dataReel[indX + nx * indY] += valRe;
-		dataImag[indX + nx * indY] += valIm;
+		dataReel[indX + nx * indY]	+= valRe;
+		dataImag[indX + nx * indY]	+= valIm;
 	}
 
 	private double[] getQuadraticSpline(double t) {
@@ -535,9 +522,9 @@ public class ImageCartesian {
 			throw new ArrayStoreException("wrong B-spline argument");
 		}
 
-		v[0] = ((t - 0.5f) * (t - 0.5f)) / 2f;
-		v[2] = ((t + 0.5f) * (t + 0.5f)) / 2f;
-		v[1] = 1f - v[0] - v[2];
+		v[0]	= ((t - 0.5f) * (t - 0.5f)) / 2f;
+		v[2]	= ((t + 0.5f) * (t + 0.5f)) / 2f;
+		v[1]	= 1f - v[0] - v[2];
 
 		return v;
 	}
@@ -553,16 +540,16 @@ public class ImageCartesian {
 	}
 
 	private double[][][] getCoeff(int xt, int yt) {
-		double[][][] output = new double[3][3][2];
+		double[][][]	output	= new double[3][3][2];
 
-		int pos;
+		int				pos;
 
 		for (int k = 0; k < 3; k++) {
 			for (int l = 0; l < 3; l++) {
-				pos = circularPeriodicX(xt + k - 1) + nx * circularPeriodicY(yt + l - 1);
+				pos				= circularPeriodicX(xt + k - 1) + nx * circularPeriodicY(yt + l - 1);
 
-				output[k][l][0] = splineCoeffReel[pos];
-				output[k][l][1] = splineCoeffImag[pos];
+				output[k][l][0]	= splineCoeffReel[pos];
+				output[k][l][1]	= splineCoeffImag[pos];
 			}
 		}
 
@@ -570,19 +557,19 @@ public class ImageCartesian {
 	}
 
 	public void apodizationHann() {
-		for (int i = 0; i < nx; i++) 
-		for (int j = 0; j < ny; j++) 
-			dataReel[i+j*nx] *= apodize(i, nx) * apodize(j, ny);
+		for (int i = 0; i < nx; i++)
+			for (int j = 0; j < ny; j++)
+				dataReel[i + j * nx] *= apodize(i, nx) * apodize(j, ny);
 	}
-	
+
 	private double apodize(double x, double n) {
-		return 0.5 *(1.0-Math.cos((x+n/2)*2.0*Math.PI/(n-1)));
+		return 0.5 * (1.0 - Math.cos((x + n / 2) * 2.0 * Math.PI / (n - 1)));
 	}
-	
+
 	public void computeSplineCoeff() {
 
-		splineCoeffImag = new double[nx * ny];
-		splineCoeffReel = new double[nx * ny];
+		splineCoeffImag	= new double[nx * ny];
+		splineCoeffReel	= new double[nx * ny];
 
 		// Swap coefficient to avoid discontinuity in the middle of the image
 		swapArray(dataReel, splineCoeffReel);
@@ -613,13 +600,13 @@ public class ImageCartesian {
 		for (int indX = 0; indX < nx / 2; indX++) {
 			for (int indY = 0; indY < ny / 2; indY++) {
 
-				temp = a[indX + indY * nx];
-				b[indX + indY * nx] = a[indX + nx / 2 + (indY + ny / 2) * nx];
-				b[indX + nx / 2 + (indY + ny / 2) * nx] = temp;
+				temp									= a[indX + indY * nx];
+				b[indX + indY * nx]						= a[indX + nx / 2 + (indY + ny / 2) * nx];
+				b[indX + nx / 2 + (indY + ny / 2) * nx]	= temp;
 
-				temp = a[indX + nx / 2 + indY * nx];
-				b[indX + nx / 2 + indY * nx] = a[indX + (indY + ny / 2) * nx];
-				b[indX + (indY + ny / 2) * nx] = temp;
+				temp									= a[indX + nx / 2 + indY * nx];
+				b[indX + nx / 2 + indY * nx]			= a[indX + (indY + ny / 2) * nx];
+				b[indX + (indY + ny / 2) * nx]			= temp;
 			}
 		}
 	}
@@ -653,11 +640,11 @@ public class ImageCartesian {
 	}
 
 	private double[] filterSE(double[] s) {
-		int n = s.length;
-		double c[] = new double[n];
-		double c0 = 8;
-		double a = 2 * Math.sqrt(2) - 3;
-		double cp[] = new double[n];
+		int		n		= s.length;
+		double	c[]		= new double[n];
+		double	c0		= 8;
+		double	a		= 2 * Math.sqrt(2) - 3;
+		double	cp[]	= new double[n];
 		cp[0] = computeIVC(s, a);
 
 		for (int i = 1; i < n; i++) {
@@ -676,13 +663,13 @@ public class ImageCartesian {
 	}
 
 	private double computeIVC(double[] signal, double a) {
-		double epsilon = 1e-6;
-		int k0 = (int) Math.ceil(Math.log(epsilon) / Math.log(Math.abs(a)));
-		double polek = a;
-		double v = signal[0];
+		double	epsilon	= 1e-6;
+		int		k0		= (int) Math.ceil(Math.log(epsilon) / Math.log(Math.abs(a)));
+		double	polek	= a;
+		double	v		= signal[0];
 		for (int k = 1; k < k0; k++) {
-			v = v + polek * signal[k];
-			polek = polek * a;
+			v		= v + polek * signal[k];
+			polek	= polek * a;
 		}
 
 		return v;
@@ -722,30 +709,30 @@ public class ImageCartesian {
 
 		for (int ind = 0; ind < nx * ny; ind++) {
 
-			output[0] += dataReel[ind] * dataReel[ind];
-			output[1] += dataImag[ind] * dataImag[ind];
+			output[0]	+= dataReel[ind] * dataReel[ind];
+			output[1]	+= dataImag[ind] * dataImag[ind];
 
 		}
-		output[0] *= dx * dy;
-		output[1] *= dx * dy;
+		output[0]	*= dx * dy;
+		output[1]	*= dx * dy;
 
 		return output;
 	}
 
 	public double[] innerProduct(ImageCartesian g) {
 		verifyCompatibleImage(g);
-		double[] innerprod = {0, 0};
+		double[] innerprod = { 0, 0 };
 		for (int ind = 0; ind < nx * ny; ind++) {
-			innerprod[0] += dataReel[ind] * g.dataReel[ind] + dataImag[ind] * g.dataImag[ind];
-			innerprod[1] += g.dataReel[ind] * dataImag[ind] - dataReel[ind] * g.dataImag[ind];
+			innerprod[0]	+= dataReel[ind] * g.dataReel[ind] + dataImag[ind] * g.dataImag[ind];
+			innerprod[1]	+= g.dataReel[ind] * dataImag[ind] - dataReel[ind] * g.dataImag[ind];
 		}
 
-		innerprod[0] *= dx * dy;
-		innerprod[1] *= dx * dy;
+		innerprod[0]	*= dx * dy;
+		innerprod[1]	*= dx * dy;
 
 		if (domain == Domain.FOURIER) {
-			innerprod[0] *= 1 / (Math.PI * Math.PI * 4);
-			innerprod[1] *= 1 / (Math.PI * Math.PI * 4);
+			innerprod[0]	*= 1 / (Math.PI * Math.PI * 4);
+			innerprod[1]	*= 1 / (Math.PI * Math.PI * 4);
 		}
 
 		return innerprod;
@@ -759,8 +746,8 @@ public class ImageCartesian {
 
 		for (int ind = 0; ind < nx * ny; ind++) {
 
-			result += Math.pow(dataReel[ind] - second.dataReel[ind], 2);
-			result += Math.pow(dataImag[ind] - second.dataImag[ind], 2);
+			result	+= Math.pow(dataReel[ind] - second.dataReel[ind], 2);
+			result	+= Math.pow(dataImag[ind] - second.dataImag[ind], 2);
 		}
 		result = result / (nx * ny);
 		return Math.sqrt(result);
@@ -771,8 +758,8 @@ public class ImageCartesian {
 	}
 
 	public double error(final ImageCartesian detector) {
-		double[] norm2T = innerProduct(this);
-		ImageCartesian diff = new ImageCartesian(this);
+		double[]		norm2T	= innerProduct(this);
+		ImageCartesian	diff	= new ImageCartesian(this);
 		diff.substract(detector);
 		double[] norm2Diff = diff.innerProduct(diff);
 		if (norm2T[0] < 10e-20)
@@ -781,32 +768,32 @@ public class ImageCartesian {
 	}
 
 	public double similarity(ImageCartesian detector) {
-		double normT = Math.sqrt(this.innerProduct(this)[0]);
-		double normD = Math.sqrt(detector.innerProduct(detector)[0]);
-		double inProd = this.innerProduct(detector)[0];
+		double	normT	= Math.sqrt(this.innerProduct(this)[0]);
+		double	normD	= Math.sqrt(detector.innerProduct(detector)[0]);
+		double	inProd	= this.innerProduct(detector)[0];
 		return inProd / (normT * normD);
 	}
 
 	public void multiply(double fact) {
 		for (int ind = 0; ind < nx * ny; ind++) {
-			dataReel[ind] *= fact;
-			dataImag[ind] *= fact;
+			dataReel[ind]	*= fact;
+			dataImag[ind]	*= fact;
 		}
 	}
 
 	public void add(ImageCartesian second) {
 		verifyCompatibleImage(second);
 		for (int ind = 0; ind < nx * ny; ind++) {
-			dataReel[ind] += second.dataReel[ind];
-			dataImag[ind] += second.dataImag[ind];
+			dataReel[ind]	+= second.dataReel[ind];
+			dataImag[ind]	+= second.dataImag[ind];
 		}
 	}
 
 	public void substract(ImageCartesian second) {
 		verifyCompatibleImage(second);
 		for (int ind = 0; ind < nx * ny; ind++) {
-			dataReel[ind] -= second.dataReel[ind];
-			dataImag[ind] -= second.dataImag[ind];
+			dataReel[ind]	-= second.dataReel[ind];
+			dataImag[ind]	-= second.dataImag[ind];
 		}
 	}
 
@@ -818,8 +805,8 @@ public class ImageCartesian {
 
 	public void abs() {
 		for (int ind = 0; ind < nx * ny; ind++) {
-			dataReel[ind] = dataReel[ind] < 0 ? -dataReel[ind] : dataReel[ind];
-			dataImag[ind] = dataImag[ind] < 0 ? -dataImag[ind] : dataImag[ind];
+			dataReel[ind]	= dataReel[ind] < 0 ? -dataReel[ind] : dataReel[ind];
+			dataImag[ind]	= dataImag[ind] < 0 ? -dataImag[ind] : dataImag[ind];
 		}
 	}
 
@@ -831,49 +818,49 @@ public class ImageCartesian {
 
 	public void pointWiseMult(ImageCartesian factor) {
 		verifyCompatibleImage(factor);
-		double a, b;
-		int n = nx*ny;
+		double	a, b;
+		int		n	= nx * ny;
 		for (int k = 0; k < n; k++) {
-			a = dataReel[k];
-			b = dataImag[k];
-			dataReel[k] = a * factor.dataReel[k] - b * factor.dataImag[k];
-			dataImag[k] = a * factor.dataImag[k] + b * factor.dataReel[k];
+			a			= dataReel[k];
+			b			= dataImag[k];
+			dataReel[k]	= a * factor.dataReel[k] - b * factor.dataImag[k];
+			dataImag[k]	= a * factor.dataImag[k] + b * factor.dataReel[k];
 		}
 	}
 
 	public void pointWiseMult2(ImageCartesian factor1, ImageCartesian factor2) {
 		verifyCompatibleImage(factor1);
 		verifyCompatibleImage(factor2);
-		double a, b, ta, tb;
-		int n = nx*ny;
+		double	a, b, ta, tb;
+		int		n	= nx * ny;
 		for (int k = 0; k < n; k++) {
-			a = dataReel[k];
-			b = dataImag[k];
-			ta = a * factor1.dataReel[k] - b * factor1.dataImag[k];
-			tb = a * factor1.dataImag[k] + b * factor1.dataReel[k];
-			dataReel[k] = ta * factor2.dataReel[k] - tb * factor2.dataImag[k];
-			dataImag[k] = ta * factor2.dataImag[k] + tb * factor2.dataReel[k];
-			
+			a			= dataReel[k];
+			b			= dataImag[k];
+			ta			= a * factor1.dataReel[k] - b * factor1.dataImag[k];
+			tb			= a * factor1.dataImag[k] + b * factor1.dataReel[k];
+			dataReel[k]	= ta * factor2.dataReel[k] - tb * factor2.dataImag[k];
+			dataImag[k]	= ta * factor2.dataImag[k] + tb * factor2.dataReel[k];
+
 		}
 	}
 
 	public void pointWiseMultCC(ImageCartesian second) {
 		verifyCompatibleImage(second);
 
-		double tempReel;
-		double tempImag;
+		double	tempReel;
+		double	tempImag;
 
-		double tempSecondReel;
-		double tempSecondImag;
+		double	tempSecondReel;
+		double	tempSecondImag;
 
 		for (int ind = 0; ind < nx * ny; ind++) {
-			tempReel = dataReel[ind];
-			tempImag = dataImag[ind];
-			tempSecondReel = second.dataReel[ind];
-			tempSecondImag = second.dataImag[ind];
+			tempReel		= dataReel[ind];
+			tempImag		= dataImag[ind];
+			tempSecondReel	= second.dataReel[ind];
+			tempSecondImag	= second.dataImag[ind];
 
-			dataReel[ind] = tempReel * tempSecondReel + tempImag * tempSecondImag;
-			dataImag[ind] = -tempReel * tempSecondImag + tempImag * tempSecondReel; // sign ....
+			dataReel[ind]	= tempReel * tempSecondReel + tempImag * tempSecondImag;
+			dataImag[ind]	= -tempReel * tempSecondImag + tempImag * tempSecondReel;	// sign ....
 		}
 	}
 
@@ -881,8 +868,8 @@ public class ImageCartesian {
 
 		for (int ind = 0; ind < nx * ny; ind++) {
 			if (dataReel[ind] < second.dataReel[ind]) {
-				dataReel[ind] = second.dataReel[ind];
-				dataImag[ind] = angle;
+				dataReel[ind]	= second.dataReel[ind];
+				dataImag[ind]	= angle;
 			}
 		}
 	}
@@ -938,8 +925,8 @@ public class ImageCartesian {
 
 		swapArray(real, real);
 
-		FloatProcessor fp = new FloatProcessor(nx, ny, real);
-		ImagePlus im = new ImagePlus(name, fp);
+		FloatProcessor	fp	= new FloatProcessor(nx, ny, real);
+		ImagePlus		im	= new ImagePlus(name, fp);
 		return im;
 	}
 
@@ -949,8 +936,8 @@ public class ImageCartesian {
 
 		swapArray(real, real);
 
-		FloatProcessor fp = new FloatProcessor(nx, ny, real);
-		ImagePlus im = new ImagePlus(name + "-Imaginary", fp);
+		FloatProcessor	fp	= new FloatProcessor(nx, ny, real);
+		ImagePlus		im	= new ImagePlus(name + "-Imaginary", fp);
 		return im;
 	}
 
@@ -963,8 +950,8 @@ public class ImageCartesian {
 
 		swapArray(Argument, Argument);
 
-		FloatProcessor fp = new FloatProcessor(nx, ny, Argument);
-		ImagePlus im = new ImagePlus(name + "-Arg", fp);
+		FloatProcessor	fp	= new FloatProcessor(nx, ny, Argument);
+		ImagePlus		im	= new ImagePlus(name + "-Arg", fp);
 		return im;
 	}
 
@@ -992,9 +979,9 @@ public class ImageCartesian {
 
 		swapArray(Argument, Argument);
 
-		FloatProcessor fp = new FloatProcessor(nx, ny, Argument);
-		ImagePlus im = new ImagePlus(s + " - Argument", fp);
-		FileSaver fs = new FileSaver(im);
+		FloatProcessor	fp	= new FloatProcessor(nx, ny, Argument);
+		ImagePlus		im	= new ImagePlus(s + " - Argument", fp);
+		FileSaver		fs	= new FileSaver(im);
 		fs.saveAsPng();
 	}
 
@@ -1004,9 +991,9 @@ public class ImageCartesian {
 
 		swapArray(dataCopy, dataCopy);
 
-		FloatProcessor fp = new FloatProcessor(nx, ny, dataCopy);
-		ImagePlus im = new ImagePlus(s + "_realCoeff", fp);
-		FileSaver fs = new FileSaver(im);
+		FloatProcessor	fp	= new FloatProcessor(nx, ny, dataCopy);
+		ImagePlus		im	= new ImagePlus(s + "_realCoeff", fp);
+		FileSaver		fs	= new FileSaver(im);
 		// fs.saveAsPng();
 		fs.saveAsJpeg();
 
@@ -1014,9 +1001,9 @@ public class ImageCartesian {
 
 		swapArray(dataCopy, dataCopy);
 
-		fp = new FloatProcessor(nx, ny, dataCopy);
-		im = new ImagePlus(s + " - imaginary Coeff", fp);
-		fs = new FileSaver(im);
+		fp	= new FloatProcessor(nx, ny, dataCopy);
+		im	= new ImagePlus(s + " - imaginary Coeff", fp);
+		fs	= new FileSaver(im);
 		// fs.saveAsPng();
 
 	}

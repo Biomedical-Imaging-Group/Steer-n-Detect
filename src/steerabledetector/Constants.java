@@ -34,9 +34,9 @@ package steerabledetector;
 import ij.IJ;
 
 public class Constants {
-	public static String urlHelp = "http://bigwww.epfl.ch/algorithms/steer-n-detect/";
-	public static String copyright = "(c) 2021 BIG EPFL - Version 1.0.1";
+	public static String urlHelp = "http://bigwww.epfl.ch/algorithms/steer_n_detect/";
+	public static String copyright = "(c) 2021 BIG EPFL - Version 1.0.2";
 	public static String settings = IJ.getDirectory("plugins") + "Steer_n_Detect.txt";	
 	public static String name = "Steer 'n' Detect";	
-	public static String version = "1.0.1";	
+	public static String version = "1.0.2";	
 }

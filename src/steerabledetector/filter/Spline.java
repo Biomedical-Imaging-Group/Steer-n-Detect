@@ -32,55 +32,58 @@
 
 package steerabledetector.filter;
 
+/**
+ * Implementation of B2 Spline
+ */
 public class Spline {
-	
-	//Implements a B2 spline
-	
-	public int width;
+
+	private int width;
 
 	public Spline() {
-		this.width=3;
+		this.width = 3;
+	}
+
+	public int getWidth() {
+		return width;
 	}
 	
 	public double getValue(double rho, int kVal, double delta) {
-		rho=rho/delta-kVal;
+		rho = rho / delta - kVal;
 		if (rho <= -1.5)
 			return 0.0;
 		if (rho >= 1.5)
 			return 0.0;
 		double positionShift = rho + 1.5;
 		if (rho < -0.5f)
-			return 0.5*positionShift * positionShift;
+			return 0.5 * positionShift * positionShift;
 		if (rho < 0.5)
 			return (-2.0 * positionShift * positionShift + 6.0 * positionShift - 3.0) / 2.0;
-			
-		return 0.5*(3.0 - positionShift) * (3.0 - positionShift);
 
+		return 0.5 * (3.0 - positionShift) * (3.0 - positionShift);
 	}
 
 	public double[] splineBound(int kVal, double delta) {
-		double [] output = {0f,0f};
-		output[0]=-1.5*delta + kVal*delta;
-		output[1]= 1.5*delta + kVal*delta;
+		double[] output = { 0f, 0f };
+		output[0] = -1.5 * delta + kVal * delta;
+		output[1] = 1.5 * delta + kVal * delta;
 		return output;
 	}
 
 	public String getName() {
 		return "B2";
-	}	
-	
-	public double innerProduct(int k1Val,double delta1, int k2Val, double delta2 , double step)
-	{
+	}
+
+	public double innerProduct(int k1Val, double delta1, int k2Val, double delta2, double step) {
 		double output = 0;
-		double []xBorn=splineBound(k1Val, delta1);
+		double[] xBorn = splineBound(k1Val, delta1);
 
 		double x = xBorn[0];
 
 		while (x < xBorn[1]) {
-			output += (getValue(x , k1Val,delta1) * getValue(x , k2Val,delta2))   * Math.abs(x);
+			output += (getValue(x, k1Val, delta1) * getValue(x, k2Val, delta2)) * Math.abs(x);
 			x += step;
 		}
-		return output*step;
+		return output * step;
 	}
-	
+
 }

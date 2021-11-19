@@ -96,7 +96,7 @@ public class SteerableDetector {
 
 		map = IC.getReal();
 		progress.progress("map", 30);
-		normalize_map();
+		normalizeMap();
 		progress.progress("normalize", 40);
 
 		angles = IC.getImag();
@@ -158,7 +158,7 @@ public class SteerableDetector {
 		return locMaxPosition;
 	}
 
-	public ArrayList<Detection> trim(ArrayList<Detection> detections, int maxNumber, double proximity) {
+	private ArrayList<Detection> trim(ArrayList<Detection> detections, int maxNumber, double proximity) {
 		Collections.sort(detections, new Comparator<Detection>() {
 			@Override
 			public int compare(Detection spot1, Detection spot2) {
@@ -184,7 +184,7 @@ public class SteerableDetector {
 		return goods;
 	}
 
-	public void normalize_map() {
+	private void normalizeMap() {
 
 		double maxval = -Double.MAX_VALUE;
 		double minval = Double.MAX_VALUE;
@@ -206,8 +206,7 @@ public class SteerableDetector {
 		}
 	}
 
-	public void angles2Deg() {
-
+	private void angles2Deg() {
 		for (int i = 0; i < angles.length; ++i) {
 			for (int j = 0; j < angles[0].length; ++j) {
 				angles[i][j] = 180 * angles[i][j] / Math.PI;

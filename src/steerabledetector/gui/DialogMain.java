@@ -68,65 +68,65 @@ import steerabledetector.gui.settings.Settings;
 
 public class DialogMain extends JDialog implements Runnable, ActionListener {
 
-	private Settings						settings			= new Settings(Constants.name, Constants.settings);
-	private Data							data;
-	private SIPM							model;
-	private SteerableDetector			detector;
-	private Parameters					params;
+	private Settings				settings			= new Settings(Constants.name, Constants.settings);
+	private Data					data;
+	private SIPM					model;
+	private SteerableDetector		detector;
+	private Parameters				params;
 
-	private JButton						bnStop			= new JButton("Stop");
-	private JButton						bnHelp1			= new JButton("Help");
-	private JButton						bnHelp2			= new JButton("Help");
-	private JButton						bnAdvanced		= new JButton("Advanced ...");
-	private JButton						bnClose			= new JButton("Close");
-	private JButton						bnRun			= new JButton("Run");
-	
-	private ProgressionBar				progress			= new ProgressionBar(Constants.copyright);
-	private HTMLPane						info				= new HTMLPane(300, 300);
-	private ImagePlus					imp;
+	private JButton					bnStop				= new JButton("Stop");
+	private JButton					bnHelp1				= new JButton("Help");
+	private JButton					bnHelp2				= new JButton("Help");
+	private JButton					bnAdvanced			= new JButton("Advanced ...");
+	private JButton					bnClose				= new JButton("Close");
+	private JButton					bnRun				= new JButton("Run");
 
-	private SpinnerInteger				spnNumberMax		= new SpinnerInteger(1000, 1, 999999, 1);
+	private ProgressionBar			progress			= new ProgressionBar(Constants.copyright);
+	private HTMLPane				info				= new HTMLPane(300, 300);
+	private ImagePlus				imp;
 
-	private JCheckBox					chkMultithread	= new JCheckBox("Multithread");
-	private JCheckBox					chkAnalyzedImage	= new JCheckBox("Show analysis");
+	private SpinnerInteger			spnNumberMax		= new SpinnerInteger(1000, 1, 999999, 1);
 
-	private OutputMode 					outputMode		= OutputMode.SAVE;
-	private RunningMode					runningMode		= RunningMode.STANDARD;
-	private boolean						stop				= false;
+	private JCheckBox				chkMultithread		= new JCheckBox("Multithread");
+	private JCheckBox				chkAnalyzedImage	= new JCheckBox("Show analysis");
 
-	private JRadioButton					chkAutomatic		= new JRadioButton("Automatic");
-	private JRadioButton					chkCustom		= new JRadioButton("Custom", true);
-	private GridPanel					pnParams			= new GridPanel(true, 4);
-	private GridPanel					pnSave			= new GridPanel("Output file", 4);
+	private OutputMode				outputMode			= OutputMode.SAVE;
+	private RunningMode				runningMode			= RunningMode.STANDARD;
+	private boolean					stop				= false;
 
-	private JPanel						cards			= new JPanel(new CardLayout());
-	private SliderTextHorizontal			slider 			= new SliderTextHorizontal();
+	private JRadioButton			chkAutomatic		= new JRadioButton("Automatic");
+	private JRadioButton			chkCustom			= new JRadioButton("Custom", true);
+	private GridPanel				pnParams			= new GridPanel(true, 4);
+	private GridPanel				pnSave				= new GridPanel("Output file", 4);
 
-	private AdvancedDialog				dlgAdvanced;
-	private TemplatePanel				template;
+	private JPanel					cards				= new JPanel(new CardLayout());
+	private SliderTextHorizontal	slider				= new SliderTextHorizontal();
 
-	private CanvasTemplate				canvas;
-	
+	private AdvancedDialog			dlgAdvanced;
+	private TemplatePanel			template;
+
+	private CanvasTemplate			canvas;
+
 	public DialogMain(ImagePlus imp, RunningMode runningMode, OutputMode outputMode, Parameters params) {
-		super(new JFrame(), "Steer'n'Detect " + (runningMode == RunningMode.PLAIN ? "Plain" : ""));
+		super(new JFrame(), "Steer'n'Detect [" + Constants.version + "]" + (runningMode == RunningMode.PLAIN ? "Plain" : ""));
 
-		this.detector = null;
-		this.model = null;
-		this.imp = imp;
-		this.data = null;
-		this.params = params;
-		this.runningMode = runningMode;
-		this.outputMode = outputMode;
-		
+		this.detector		= null;
+		this.model			= null;
+		this.imp			= imp;
+		this.data			= null;
+		this.params			= params;
+		this.runningMode	= runningMode;
+		this.outputMode		= outputMode;
+
 		spnNumberMax.set(params.nDetections);
-		
-		dlgAdvanced = new AdvancedDialog(params, settings);
-		template	 = new TemplatePanel(this, imp, progress, info, params);
+
+		dlgAdvanced	= new AdvancedDialog(params, settings);
+		template	= new TemplatePanel(this, imp, progress, info, params);
 
 		ButtonGroup group1 = new ButtonGroup();
 		group1.add(chkAutomatic);
 		group1.add(chkCustom);
-		
+
 		// Panel Parameters
 		pnParams.place(0, 0, 2, 1, slider);
 		pnParams.place(1, 0, "Max. Detections");
@@ -149,9 +149,9 @@ public class DialogMain extends JDialog implements Runnable, ActionListener {
 		pnParameter.place(2, 0, 2, 1, pnParams);
 
 		GridPanel pnButtons = new GridPanel(false, 4);
-		pnButtons.place(0,  0, bnHelp1);
-		pnButtons.place(0,  1, bnClose);
-		pnButtons.place(0,  2, bnRun);
+		pnButtons.place(0, 0, bnHelp1);
+		pnButtons.place(0, 1, bnClose);
+		pnButtons.place(0, 2, bnRun);
 
 		// Panel Status
 		JToolBar pnStatus = new JToolBar("status");
@@ -171,7 +171,7 @@ public class DialogMain extends JDialog implements Runnable, ActionListener {
 		pnDetector.add(template);
 		pnDetector.add(pnParameter);
 		pnDetector.add(pnButtons);
-		
+
 		cards.add(pnDetector, "detector");
 		cards.add(pnJournal, "journal");
 
@@ -205,7 +205,7 @@ public class DialogMain extends JDialog implements Runnable, ActionListener {
 		setModal(false);
 		setResizable(false);
 		canvas = new CanvasTemplate(imp);
-		
+
 		if (runningMode == RunningMode.MACRO) {
 			template.getRoi();
 			template.run();
@@ -226,36 +226,43 @@ public class DialogMain extends JDialog implements Runnable, ActionListener {
 			settings.storeValue("gamma", params.gamma);
 			dispose();
 		}
-		else if (event.getSource() == bnStop)
-			stop();
-		else if (event.getSource() == bnHelp1)
-			WebBrowser.open(Constants.urlHelp);
-		else if (event.getSource() == bnHelp2)
-			WebBrowser.open(Constants.urlHelp);
-		else if (event.getSource() == chkAutomatic)
-			updateInterface();
-		else if (event.getSource() == chkCustom)
-			updateInterface();
-		else if (event.getSource() == bnAdvanced)
-			dlgAdvanced.setVisible(true);
-		else if (event.getSource() == bnRun) {
-			if (imp == null) {
-				IJ.error("Invalid source image.");
-				return;
-			}
-			if (imp.getProcessor() == null) {
-				IJ.error("Invalid source image.");
-				return;
-			}
-			if (model == null) {
-				IJ.error("The template model is not defined");
-				return;
-			}
-			Thread thread = new Thread(this);
-			thread.setPriority(Thread.MIN_PRIORITY);
-			thread.start();
-			settings.storeRecordedItems();
-		}
+		else
+			if (event.getSource() == bnStop)
+				stop();
+			else
+				if (event.getSource() == bnHelp1)
+					WebBrowser.open(Constants.urlHelp);
+				else
+					if (event.getSource() == bnHelp2)
+						WebBrowser.open(Constants.urlHelp);
+					else
+						if (event.getSource() == chkAutomatic)
+							updateInterface();
+						else
+							if (event.getSource() == chkCustom)
+								updateInterface();
+							else
+								if (event.getSource() == bnAdvanced)
+									dlgAdvanced.setVisible(true);
+								else
+									if (event.getSource() == bnRun) {
+										if (imp == null) {
+											IJ.error("Invalid source image.");
+											return;
+										}
+										if (imp.getProcessor() == null) {
+											IJ.error("Invalid source image.");
+											return;
+										}
+										if (model == null) {
+											IJ.error("The template model is not defined");
+											return;
+										}
+										Thread thread = new Thread(this);
+										thread.setPriority(Thread.MIN_PRIORITY);
+										thread.start();
+										settings.storeRecordedItems();
+									}
 	}
 
 	@Override
@@ -268,7 +275,7 @@ public class DialogMain extends JDialog implements Runnable, ActionListener {
 		setParameters();
 		double chrono = System.nanoTime();
 		progress.reset("Detector ");
-		
+
 		this.detector = new SteerableDetector(imp, model, params, progress, info);
 		this.detector.analysis();
 		data = detector.getData();
@@ -276,22 +283,22 @@ public class DialogMain extends JDialog implements Runnable, ActionListener {
 			stop();
 			return;
 		}
-		
+
 		dispose();
 		info.append("p", "Time: " + new SimpleDateFormat("dd MMMM yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
 		info.append("p", "" + data.getLocalMax().size() + " local maxima");
 		info.append("p", "" + data.getDetected().size() + " detections");
 		info.append("p", "" + data.getSelected().size() + " detections");
 
-		int mb = 1024 * 1024;
-		Runtime instance = Runtime.getRuntime();
+		int		mb			= 1024 * 1024;
+		Runtime	instance	= Runtime.getRuntime();
 		info.append("p", "Total memory: " + instance.totalMemory() / mb + "Mb");
 		info.append("p", "Used memory: " + (instance.totalMemory() - instance.freeMemory()) / mb + "Mb");
 		info.append("p", "Elapsed time: " + (System.nanoTime() - chrono) / (1000000.0) + "ms");
 
-		//if (outputMode == OutputMode.SELECTION) 
-			new DialogSelection(imp, detector, data, params, info);
-			
+		// if (outputMode == OutputMode.SELECTION)
+		new DialogSelection(imp, detector, data, params, info);
+
 		if (outputMode == OutputMode.SAVE)
 			data.saveCVS(params.filename);
 	}
